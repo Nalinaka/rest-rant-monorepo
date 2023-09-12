@@ -51,7 +51,8 @@ function PlaceDetails() {
 		const response = await fetch(`http://localhost:5000/places/${place.placeId}/comments`, {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${localStorage.getItem('token')}`
 			},
 			body: JSON.stringify(commentAttributes)
 		})
@@ -67,8 +68,6 @@ function PlaceDetails() {
 		})
 
 	}
-
-
 
 	let comments = (
 		<h3 className="inactive">
@@ -96,11 +95,29 @@ function PlaceDetails() {
 		)
 		comments = place.comments.map(comment => {
 			return (
-				<CommentCard key={comment.commentId} comment={comment} onDelete={() => deleteComment(comment)} />
+				<CommentCard 
+				key={comment.commentId} 
+				comment={comment} onDelete={() => 
+				deleteComment(comment)} 
+				/>
 			)
 		})
 	}
 
+let placeActions = null
+
+if (currentUser?.role === 'admin') {
+    placeActions = (
+        <>
+            <a className="btn btn-warning" onClick={editPlace}>
+                Edit
+            </a>
+            <button type="submit" className="btn btn-danger" onClick={deletePlace}>
+                Delete
+            </button>
+        </>
+    )
+}
 
 	return (
 		<main>
